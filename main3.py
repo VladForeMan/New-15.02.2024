@@ -6,3 +6,5 @@ for character in string:
         letter_count +=1
     elif character.isdigit():
         digit_count += 1
+print("Кількість букв:", letter_count)
+print("Кількість цифр:", digit_count)
