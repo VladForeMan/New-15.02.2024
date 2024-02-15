@@ -10,3 +10,4 @@ while True:
             print(f"!{i}!", end=" ")
         else:
             print(i, end=" ")
+print("\n")
