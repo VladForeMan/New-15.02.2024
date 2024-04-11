@@ -20,7 +20,7 @@ async def cmd_help(message: types.Message):
 async def cmd_roll(message: types.Message, command: CommandObject):
     max_value = 100
     if command.args and command.args[0].isdigit():
-        max_value = min(int(command.args[0]), 5)
+        max_value = min(int(command.args[0]), 50)
 
     random_number = random.randint(1, max_value)
     await message.answer(f"Випадкове число від 1 до {max_value}: {random_number}")
