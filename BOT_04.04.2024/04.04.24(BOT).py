@@ -11,6 +11,9 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token="7082820861:AAGGd2Rpln7OBKqfWXmfChdS7F29mm5OxIk")
 dp = Dispatcher()
 
+from aiogram import F
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
+
 @dp.message(Command("menu"))
 async def cmd_help(message: types.Message):
     await message.answer(
@@ -22,22 +25,29 @@ async def cmd_help(message: types.Message):
     )
 
 @dp.message(Command("start"))
-async def cmd_buttons(messege:types.Message, state: FSMContext):
-    keyboard = [
-        [
-            types.KeyboardButton(text='/start'),
-            types.KeyboardButton(text='/menu'),
-            types.KeyboardButton(text='/test'),
-            types.KeyboardButton(text='/roll')
-        ]
-    ]
-    keyboard_markup = types.ReplyKeyboardMarkup(
-        keyboard=keyboard,
+async def cmd_buttons(messege: types.Message, state: FSMContext):
+    builder = ReplyKeyboardBuilder()
+    builder.add(types.KeyboardButton(text='/start'))
+    builder.add(types.KeyboardButton(text='/menu'))
+    builder.row(types.KeyboardButton(text='/roll'))
+    builder.add(types.KeyboardButton(text='/test'))
+    builder.add(types.KeyboardButton(text='/mach'))
+    builder.row(types.KeyboardButton(text='menu_stop'))
+
+    for i in range(10):
+        button = types.KeyboardButton(text=f'{i + 1}')
+        if not i:
+            builder.row(button)
+        else:
+            builder.add(button)
+
+
+
+    keyboard_markup = builder.as_markup(
         resize_keyboard=True
 
     )
     await messege.answer('Кнопки додано', reply_markup=keyboard_markup)
-
 
 
 
@@ -63,6 +73,14 @@ async def get_second_number(message: types.Message, state: FSMContext):
     await message.answer(f'{num_1} + {num_2} = {num_1 + num_2}')
     await state.clear()
 
+@dp.message(F.text.in_(("menu_stop")))
+async def onclick_button_1(message: types.Message, state: FSMContext ):
+    await message.answer(f'Ви натиснули кнопку {message.text}',
+                         reply_markup=types.ReplyKeyboardRemove())
+
+# @dp.message(F.text == "1")
+# async def onclick_button_1(message: types.Message, state: FSMContext ):
+#     await message.answer('Ви натиснули кнопку 1')
 
 @dp.message(Command("roll"))
 async def cmd_roll(message: types.Message, command: CommandObject):
@@ -80,12 +98,6 @@ async def cmd_test(message: types.Message, command: CommandObject):
       await message.answer(f'Параметри команди ({len(args)}): {args}')
     else:
       await message.answer("Команда без параметрів")
-
-
-
-
-
-
 
 
 
